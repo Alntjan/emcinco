@@ -7,7 +7,6 @@
   });
 </script>
 <h3>Encomendas</h3>
-<% @multibancos = @orders.where("gateway = ?", params["Multibanco"]) %>
 <table>
   <tbody>
     <% @orders.each do |order| %>
