@@ -6,8 +6,9 @@
     });
   });
 </script>
-
-<%= @multibancos.inspect %>
+<% @multibancos.each do |multibanco| %>
+  <%= multibanco %>
+<% end %>
 
 <h3>Encomendas</h3>
 <table>
