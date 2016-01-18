@@ -4,7 +4,7 @@ class HomeController < ApplicationController
 
   def index
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100})
-    @multibanco = @orders.where(:email => "oliveiracatarino88@gmail.com")
+    @multibanco = @orders.where("email = ?", params["oliveiracatarino88@gmail.com"])
   end
 
 end
