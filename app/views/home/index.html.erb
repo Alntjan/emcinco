@@ -90,7 +90,7 @@
           </thead>
           <tbody>
             <% @orders.each do |order| %>
-              <% if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)" && order.fulfillment_status == "unfulfilled" %>
+              <% if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)" && order.fulfillment_status == "unshipped" %>
                 <tr>
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
