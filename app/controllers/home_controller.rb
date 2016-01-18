@@ -6,7 +6,7 @@ class HomeController < ApplicationController
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100, :created_at_min => "2016-01-8 00:00"})
     @multibancos = []
     @orders.each do |order|
-      @multibancos += order if order
+      @multibancos += "1"
     end
   end
 
