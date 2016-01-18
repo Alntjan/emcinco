@@ -7,64 +7,114 @@
   });
 </script>
 
-<% @orders.each do |encomenda| %>
-
-<% end %>
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h3>Encomendas</h3>
+      <h3>Multibanco</h3>
       <div class="table-responsive">
         <table class="table">
-        <thead>
-          <tr>
-            <th>
-              Numero
-            </th>
-            <th>
-              Pago?
-            </th>
-            <th>
-              Enviado?
-            </th>
-            <th>
-              Gateways
-            </th>
-            <th>
-              Gateway
-            </th>
-            <th>
-              Peso
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @orders.each do |order| %>
-            <% if order.gateway == "Multibanco" %>
-              <tr>
-                <td>
-                  <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
-                </td>
-                <td>
-                  <%= order.financial_status %>
-                </td>
-                <td>
-                  <%= order.fulfillment_status %>
-                </td>
-                <td>
-                  <%= order.payment_gateway_names %>
-                </td>
-                <td>
-                  <%= order.gateway %>
-                </td>
-                <td>
-                  <%= order.total_weight %>
-                </td>
-              </tr>
+          <thead>
+            <tr>
+              <th>
+                Numero
+              </th>
+              <th>
+                Pago?
+              </th>
+              <th>
+                Enviado?
+              </th>
+              <th>
+                Gateways
+              </th>
+              <th>
+                Gateway
+              </th>
+              <th>
+                Peso
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders.each do |order| %>
+              <% if order.gateway == "Multibanco" && order.financial_status == "paid" %>
+                <tr>
+                  <td>
+                    <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                  </td>
+                  <td>
+                    <%= order.financial_status %>
+                  </td>
+                  <td>
+                    <%= order.fulfillment_status %>
+                  </td>
+                  <td>
+                    <%= order.payment_gateway_names %>
+                  </td>
+                  <td>
+                    <%= order.gateway %>
+                  </td>
+                  <td>
+                    <%= order.total_weight %>
+                  </td>
+                </tr>
+              <% end %>
             <% end %>
-          <% end %>
-        </tbody>
-      </table>
+          </tbody>
+        </table>
+      </div>
+      <h3>Cobrança</h3>
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>
+                Numero
+              </th>
+              <th>
+                Pago?
+              </th>
+              <th>
+                Enviado?
+              </th>
+              <th>
+                Gateways
+              </th>
+              <th>
+                Gateway
+              </th>
+              <th>
+                Peso
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders.each do |order| %>
+              <% if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)" && order.fulfillment_status == "unfulfilled" %>
+                <tr>
+                  <td>
+                    <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                  </td>
+                  <td>
+                    <%= order.financial_status %>
+                  </td>
+                  <td>
+                    <%= order.fulfillment_status %>
+                  </td>
+                  <td>
+                    <%= order.payment_gateway_names %>
+                  </td>
+                  <td>
+                    <%= order.gateway %>
+                  </td>
+                  <td>
+                    <%= order.total_weight %>
+                  </td>
+                </tr>
+              <% end %>
+            <% end %>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
