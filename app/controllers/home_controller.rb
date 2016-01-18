@@ -5,6 +5,8 @@ class HomeController < ApplicationController
   def index
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100, :created_at_min => "2016-01-8 00:00"})
     @ultima = @orders.last.gateway
+    @multibancos = @orders.where(gateway: "Multibanco")
+
   end
 
 end
