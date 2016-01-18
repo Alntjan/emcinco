@@ -7,8 +7,8 @@
   });
 </script>
 <h3>Encomendas</h3>
-<% @mb.each do |order| %>
-  1
+<% @mb.each do |mb| %>
+  <%= mb.gateway %>
 <% end %>
 <table>
   <tbody>
