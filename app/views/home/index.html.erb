@@ -10,6 +10,26 @@
 <table>
   <tbody>
     <% @orders.each do |order| %>
+      <th>
+        <td>
+          Numero
+        </td>
+        <td>
+          Pago?
+        </td>
+        <td>
+          Enviado?
+        </td>
+        <td>
+          Gateways
+        </td>
+        <td>
+          Gateway
+        </td>
+        <td>
+          Peso
+        </td>
+      </th>
       <tr>
         <td>
           <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
