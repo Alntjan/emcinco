@@ -3,7 +3,8 @@ class HomeController < ApplicationController
   layout 'embedded_app'
 
   def index
-    @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 10})
+    @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100})
+    @multibanco = @orders.where(:gateway => "Multibanco")
   end
 
 end
