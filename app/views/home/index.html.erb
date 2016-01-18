@@ -6,7 +6,7 @@
     });
   });
 </script>
-<h3>Products</h3>
+<h3>Encomendas</h3>
 <table>
   <tbody>
     <% @orders.each do |order| %>
@@ -22,6 +22,12 @@
         </td>
         <td>
           <%= order.payment_gateway_names %>
+        </td>
+        <td>
+          <%= order.gateway %>
+        </td>
+        <td>
+          <%= order.total_weight %>g
         </td>
       </tr>
     <% end %>
