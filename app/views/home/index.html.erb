@@ -6,6 +6,11 @@
     });
   });
 </script>
+
+<% @multibancos.each do |mb| %>
+  <%= mb.order_number %>
+<% end %>
+
 <h3>Encomendas</h3>
 <table>
   <thead>
