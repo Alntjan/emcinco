@@ -10,7 +10,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-xs-12">
-      <h3>Multibanco</h3>
+      <h3>Pré-pagos</h3>
       <div class="table-responsive">
         <table class="table">
           <thead>
@@ -37,7 +37,7 @@
           </thead>
           <tbody>
             <% @orders.each do |order| %>
-              <% if order.gateway == "Multibanco" && order.financial_status == "paid" && order.fulfillment_status == "unshipped" %>
+              <% if (order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized") && order.fulfillment_status == "unshipped" %>
                 <tr>
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
