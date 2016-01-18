@@ -9,10 +9,19 @@
 <h3>Products</h3>
 <table>
   <tbody>
-    <% @products.each do |product| %>
+    <% @orders.each do |order| %>
       <tr>
         <td>
-          <a href='https://<%="#{@shop_session.url}/admin/orders/#{product.id}"%>' target="_blank"> <%= product.id %> </a>
+          <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+        </td>
+        <td>
+          <%= order.financial_status %>
+        </td>
+        <td>
+          <%= order.fulfillment_status %>
+        </td>
+        <td>
+          <%= payment_gateway_names %>
         </td>
       </tr>
     <% end %>

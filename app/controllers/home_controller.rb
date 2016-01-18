@@ -3,7 +3,7 @@ class HomeController < ApplicationController
   layout 'embedded_app'
 
   def index
-    @products = ShopifyAPI::Order.find(:all, :params => {:limit => 10})
+    @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 10})
   end
 
 end
