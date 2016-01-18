@@ -36,28 +36,28 @@
   </thead>
   <tbody>
     <% @orders.each do |order| %>
-    <% unless order.gateway == "manual" %>
-      <tr>
-        <td>
-          <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
-        </td>
-        <td>
-          <%= order.financial_status %>
-        </td>
-        <td>
-          <%= order.fulfillment_status %>
-        </td>
-        <td>
-          <%= order.payment_gateway_names %>
-        </td>
-        <td>
-          <%= order.gateway %>
-        </td>
-        <td>
-          <%= order.total_weight %>g
-        </td>
-      </tr>
-    <% end %>
+      <% if order.gateway == "Multibanco" %>
+        <tr>
+          <td>
+            <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+          </td>
+          <td>
+            <%= order.financial_status %>
+          </td>
+          <td>
+            <%= order.fulfillment_status %>
+          </td>
+          <td>
+            <%= order.payment_gateway_names %>
+          </td>
+          <td>
+            <%= order.gateway %>
+          </td>
+          <td>
+            <%= (order.total_weight/1000).float(2) %>
+          </td>
+        </tr>
+      <% end %>
     <% end %>
   </tbody>
 </table>
