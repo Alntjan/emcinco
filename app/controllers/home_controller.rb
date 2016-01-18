@@ -4,7 +4,7 @@ class HomeController < ApplicationController
 
   def index
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 10})
-    @mb = ShopifyAPI::Order.where(params: {gateway: "Multibanco", limit: 250, page: 1})
+    @mb = ShopifyAPI::Order.where('gateway' => 'Multibanco')
   end
 
 end
