@@ -36,6 +36,7 @@
   </thead>
   <tbody>
     <% @orders.each do |order| %>
+    <% unless order.gateway == "manual" %>
       <tr>
         <td>
           <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
@@ -56,6 +57,7 @@
           <%= order.total_weight %>g
         </td>
       </tr>
+    <% end %>
     <% end %>
   </tbody>
 </table>
