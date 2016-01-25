@@ -106,7 +106,7 @@
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
                     <% @customer = customer_stats(order.customer.id) %>
-                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-truck"></span></small></td>
+                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-dropbox"></span></small></td>
                   <td>
                     <% if order.financial_status == "authorized" %>
                       <span class="label label-warning"><%= order.financial_status %></span>
@@ -209,9 +209,9 @@ end %>
 
                           &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.zip %> <%= address.city %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.province %>, <%= address.country %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.phone %>&nbsp;&nbsp;
                         <% if @customer.tags.include?(address.id.to_s) %>
-                          <i class="fui-check" style="font-size: 0.8em; margin-top:-25px; color:#1abc9c;"></i>
+                          <i class="fui-truck" style="font-size: 0.8em; margin-top:-25px; color:#1abc9c;"></i>
                         <% else %>
-                          <i class="fui-cross" style="font-size: 0.8em; margin-top:-25px; color:#e74c3c;"></i>
+                          <i class="fui-truck" style="font-size: 0.8em; margin-top:-25px; color:#e74c3c;"></i>
                         <% end %>
 
                         </a>
