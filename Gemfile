@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 
 gem "flat-ui-rails"
+gem 'rails_12factor'
 gem 'shopify_app', '~> 6.0.6'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.2'
