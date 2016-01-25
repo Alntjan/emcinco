@@ -27,16 +27,18 @@
         <%
         string = "https://#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com"
         @orders.each do |order|
+          enviar_count = 0
           if (((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil
             string << "&ids%5B%5D=#{order.id}"
+            enviar_count = enviar_count + 1
           end
         end
         %>
         <% paractt = [] %>
-        <a class="btn btn-info btn-xs btn-embossed" href='<%= string %>' target="_blank">Imprimir Todas&nbsp;<span class="icon-printer"></span></a>
+        <a class="btn btn-info btn-xs btn-embossed" href='<%= string %>' target="_blank"><%= enviar_count %>&nbsp;<span class="icon-printer"></span></a>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-danger btn-xs btn-embossed" data-toggle="modal" data-target="#myModal">
-          Importador CTTExpresso&nbsp;<span class="icon-truck"></span>
+          <%= enviar_count %>&nbsp;<span class="icon-truck"></span>
         </button>
       </p>
     </div>
