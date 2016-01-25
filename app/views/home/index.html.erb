@@ -33,10 +33,10 @@
         end
         %>
         <% paractt = [] %>
-        <a class="btn btn-info btn-xs btn-embossed" href='<%= string %>' target="_blank">Imprimir Todas</a>
+        <a class="btn btn-info btn-xs btn-embossed" href='<%= string %>' target="_blank">Imprimir Todas&nbsp;<span class="icon-printer"></span></a>
         <!-- Button trigger modal -->
         <button type="button" class="btn btn-danger btn-xs btn-embossed" data-toggle="modal" data-target="#myModal">
-          Importador CTTExpresso
+          Importador CTTExpresso&nbsp;<span class="icon-truck"></span>
         </button>
       </p>
     </div>
@@ -100,13 +100,13 @@
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
                     <% if order.updated_at > ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %>
-                      <i class="glyphicon glyphicon-time" style="font-size: 0.9em; margin-top: -26px;"></i>
+                      <i class="icon-clock" style="font-size: 0.9em; margin-top: -26px;"></i>
                     <% end %>
                   </td>
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
                     <% @customer = customer_stats(order.customer.id) %>
-                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;&#x1f4e6;</small></td>
+                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-truck"></span></small></td>
                   <td>
                     <% if order.financial_status == "authorized" %>
                       <span class="label label-warning"><%= order.financial_status %></span>
@@ -172,7 +172,7 @@ end %>
 
 
                     <a class="btn btn-inverse btn-xs btn-embossed" role="button" data-toggle="collapse" href="#<%= order.id %>" aria-expanded="false" aria-controls="<%= order.id %>">
-                      <span class="fui-home" style="margin-top: 0;"></span>
+                      <span class="icon-home-24" style="margin-top: 0;"></span>
                     </a>
                     <button id="<%= order.number %>"" class="btn btn-danger btn-copy btn-embossed btn-xs" data-clipboard-text="<%= I18n.transliterate(cttorder).gsub('?', '') %>" data-toggle="tooltip" title="Copiado!" data-delay='{"show":"5000", "hide":"1000"}'>
                         <span class="icon-paste" style="margin-top:0;"></span>
@@ -509,7 +509,7 @@ somefile.close
                     </td>
 
                     <td>
-                    <% if order.source_name == "web" %><span class="">&#x1f30e;</span><% end %>
+                    <% if order.source_name == "web" %><span class="icon-world" style="top: 3px;"></span><% end %>
                     <%
                       case order.gateway
                       when "braintree"
