@@ -25,9 +25,9 @@
       <p>
         <a class="btn btn-primary btn-xs" href="#" role="button"><%= @count %> Processadas</a>
         <%
-        string = "https://#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com"
-        @orders.each do |order|
+          string = "https://#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com"
           enviar_count = 0
+          @orders.each do |order|
           if (((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil
             string << "&ids%5B%5D=#{order.id}"
             enviar_count = enviar_count + 1
