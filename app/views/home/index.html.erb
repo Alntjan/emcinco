@@ -21,7 +21,7 @@
 <div class="container-fluid">
   <div class="row">
     <div class="jumbotron" style="padding-top:1px; padding-bottom:10px; margin-bottom:0; background-color: #f9f9fa;">
-      <h1>Olá Carlão!</h1>
+      <h1><span class="icon-shop"></span>&nbsp;Olá Carlão!</h1>
       <p>
         <a class="btn btn-primary btn-xs" href="#" role="button"><%= @count %> Processadas</a>
         <%
@@ -98,7 +98,7 @@
                 paractt << I18n.transliterate(cttorder).gsub('?', '')
               %>
 
-                <tr>
+                <tr <% if order.updated_at > ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %> class="danger" <% end %>>
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
                     <% if order.updated_at > ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %>
