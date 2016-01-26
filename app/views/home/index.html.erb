@@ -94,7 +94,7 @@
                 if order.shipping_address.company
                   cttorder << order.shipping_address.company
                 end
-                cttorder << "+#{order.shipping_address.address1} #{order.shipping_address.address2}+#{order.shipping_address.city}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3]}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6]}++Obs:+++#{(order.shipping_address.phone).gsub!('+351', '')}++#{order.customer.email}+#{order.shipping_address.country_code}+0++++#{order.shipping_address.phone}+0++0++0++++"
+                cttorder << "+#{order.shipping_address.address1} #{order.shipping_address.address2} - #{order.shipping_address.company}+#{order.shipping_address.city}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3]}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6]}++Obs:+++#{(order.shipping_address.phone).gsub!('+351', '')}++#{order.customer.email}+#{order.shipping_address.country_code}+0++++#{order.shipping_address.phone}+0++0++0++++"
                 paractt << I18n.transliterate(cttorder).gsub('?', '')
               %>
 
@@ -155,7 +155,11 @@
                     <!-- <% order.note_attributes.each do |attribute| %>
                       <%= attribute.name %>: <%= attribute.value %>
                     <% end %><br> -->
-                    <%= order.shipping_address.province %>
+                    <% if order.shipping_address.province == "Açores" || order.shipping_address.province == "Madeira" %>
+                      <span style="color: #e74c3c;"><%= order.shipping_address.province %>!</span>
+                    <% else %>
+                      <%= order.shipping_address.province %>
+                    <% end %>
                   </td>
                   <td>
 
