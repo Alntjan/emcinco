@@ -71,7 +71,7 @@
           </thead>
           <tbody>
             <% @orders.each do |order| %>
-              <% if (((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil   %>
+              <% if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")  %>
               <% order.note_attributes.each do |attribute|
                  if attribute.name['vat_number']
                   @vat_value = attribute.value
@@ -94,7 +94,11 @@
                 if order.shipping_address.company
                   cttorder << order.shipping_address.company
                 end
-                cttorder << "+#{order.shipping_address.address1} #{order.shipping_address.address2} - #{order.shipping_address.company}+#{order.shipping_address.city}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3]}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6]}++Obs:+++#{(order.shipping_address.phone).gsub!('+351', '')}++#{order.customer.email}+#{order.shipping_address.country_code}+0++++#{order.shipping_address.phone}+0++0++0++++"
+                cttorder << "+#{order.shipping_address.address1} #{order.shipping_address.address2}"
+                if order.shipping_address.company && (order.shipping_address.address1.size + order.shipping_address.address2.size + order.shipping_address.company.size) > 60
+                  cttorder << order.shipping_address.company
+                end
+                cttorder << "+#{order.shipping_address.city}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3]}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6]}++Obs:+++#{(order.shipping_address.phone).gsub!('+351', '')}++#{order.customer.email}+#{order.shipping_address.country_code}+0++++#{order.shipping_address.phone}+0++0++0++++"
                 paractt << I18n.transliterate(cttorder).gsub('?', '')
               %>
 
