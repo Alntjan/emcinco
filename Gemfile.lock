@@ -58,11 +58,19 @@ GEM
     execjs (2.6.0)
     faraday (0.9.1)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.10.0)
+      faraday (>= 0.7.4, < 0.10)
     flat-ui-rails (0.0.2)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
+    happymapper (0.4.1)
+      libxml-ruby (~> 2.0)
     hashie (3.4.2)
     i18n (0.7.0)
+    invoicexpress (0.1.9.1)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.9)
+      happymapper (~> 0.4)
     jbuilder (2.4.0)
       activesupport (>= 3.0.0, < 5.1)
       multi_json (~> 1.2)
@@ -72,6 +80,7 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.3)
     jwt (1.5.0)
+    libxml-ruby (2.9.0)
     loofah (2.0.3)
       nokogiri (>= 1.5.9)
     mail (2.6.3)
@@ -184,6 +193,7 @@ DEPENDENCIES
   byebug
   coffee-rails (~> 4.1.0)
   flat-ui-rails
+  invoicexpress (~> 0.1.9.1)
   jbuilder (~> 2.0)
   jquery-rails
   pg
