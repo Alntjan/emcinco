@@ -13,7 +13,8 @@ class HomeController < ApplicationController
     @order.note_attributes = {"vat_number" => params[:vat_number]}
 
     @client = get_invoicexpress_client()
-    @client.update_client(@client.client_by_code(@order.customer.id), :fiscal_id=> params[:vat_number])
+    customer = @client.client_by_code(@order.customer.id)
+    Invoicexpress::Models::Client.update_client(customer, options = {:fiscal_id=>params[:vat_number]})
     if @order.save
       flash[:success] = "Contribuinte guardado!"
       redirect_to root_path
