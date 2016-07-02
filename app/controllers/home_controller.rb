@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     @client = get_invoicexpress_client()
     @invoice_client = @client.client_by_code(@order.customer.id)
     @invoice_client.fiscal_id = params[:vat_number]
-    if @invoice_client.save
+    if @invoice_client.update_client
       flash[:success] = "Contribuinte guardado!"
       redirect_to root_path
     else
