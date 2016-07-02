@@ -6,16 +6,16 @@ class HomeController < ApplicationController
   def index
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100, :created_at_min => "2016-01-8 00:00"})
     @count = @orders.count
-    @client = get_invoicexpress_client()
   end
 
   def vat
     @order = ShopifyAPI::Order.find(params[:order_id])
     @order.note_attributes = {"vat_number" => params[:vat_number]}
 
+    @client = get_invoicexpress_client()
     @invoice_client = @client.client_by_code(@order.customer.id)
     @invoice_client.fiscal_id = params[:vat_number]
-    if @invoice_client.save 
+    if @invoice_client.save
       flash[:success] = "Contribuinte guardado!"
       redirect_to root_path
     else
