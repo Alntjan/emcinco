@@ -12,7 +12,10 @@ class HomeController < ApplicationController
   def vat
     @order = ShopifyAPI::Order.find(params[:order_id])
     @order.note_attributes = {"vat_number" => params[:vat_number]}
-    if @order.save
+
+    @invoice_client = @client.client_by_code(@order.customer.id)
+    @invoice_client.fiscal_id = params[:vat_number]
+    if @invoice_client.save 
       flash[:success] = "Contribuinte guardado!"
       redirect_to root_path
     else
