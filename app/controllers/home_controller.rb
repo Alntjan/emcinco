@@ -6,6 +6,7 @@ class HomeController < ApplicationController
   def index
     @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100, :created_at_min => "2016-01-8 00:00"})
     @count = @orders.count
+    @client = get_invoicexpress_client()
   end
 
   def vat
@@ -34,6 +35,13 @@ class HomeController < ApplicationController
 
   def customer_stats(id)
     @customer = ShopifyAPI::Customer.find(id)
+  end
+
+  def get_invoicexpress_client
+    Invoicexpress::Client.new(
+      :screen_name =>  'morewheylda',
+      :api_key     =>  '4ff4137148a4ef2000a206c8fb0b7f5d71fd10f7'
+    )
   end
 
   def tags
