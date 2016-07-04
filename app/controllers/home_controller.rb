@@ -15,7 +15,7 @@ class HomeController < ApplicationController
     @client = get_invoicexpress_client()
     if @client.client_by_code(@order.customer.id)
       @customer = @client.client_by_code(@order.customer.id)
-      if Valvat.new(params[:vat_number]).valid?
+      if Valvat.new("PT"+params[:vat_number]).valid?
         @customer.fiscal_id << params[:vat_number]
         if @client.update_client(@customer)
           flash[:success] = "Contribuinte guardado: #{@customer.fiscal_id}"
@@ -29,7 +29,7 @@ class HomeController < ApplicationController
         redirect_to root_path
       end
     else
-      if Valvat.new(params[:vat_number]).valid?
+      if Valvat.new("PT"+params[:vat_number]).valid?
         if @order.customer!=nil
           client = Invoicexpress::Models::Client.new(
             :name => "#{customer.first_name} #{customer.last_name}",
