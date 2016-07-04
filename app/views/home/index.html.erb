@@ -341,7 +341,6 @@ somefile.close
                     %>
                     </td>
                     <td>
-                      <!-- <% if order.customer.metafields.dados.NIF %><span class="fui-check"></span><% end %> -->
                       <% order.customer.metafields.each do |metafield| %>
                         <%= metafield.key %> : <%= metafield.value %>
                       <% end %>
