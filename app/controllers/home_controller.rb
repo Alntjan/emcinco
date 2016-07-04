@@ -17,13 +17,9 @@ class HomeController < ApplicationController
       @customer = @client.client_by_code(@order.customer.id)
       if Valvat.new("PT"+params[:vat_number]).valid?
         @customer.fiscal_id = params[:vat_number]
-        if @client.update_client(@customer)
-          flash[:success] = "Contribuinte guardado: #{@customer.fiscal_id}"
-          redirect_to root_path
-        else
-          flash[:error] = "Erro!"
-          redirect_to root_path
-        end
+        @client.update_client(@customer)
+        flash[:success] = "Contribuinte guardado: #{@customer.fiscal_id}"
+        redirect_to root_path
       else
         flash[:error] = "Contribuinte inválido e erro no update!"
         redirect_to root_path
@@ -50,13 +46,9 @@ class HomeController < ApplicationController
             cliente.postal_code= @order.customer.default_address.zip
             cliente.phone      = @order.customer.default_address.phone
           end
-          if @client.create_client(cliente)
-            flash[:success] = "Cliente Guardado e Contribuinte guardado: #{@customer.fiscal_id}"
-            redirect_to root_path
-          else
-            flash[:error] = "Erro na criação de cliente!"
-            redirect_to root_path
-          end
+          @client.create_client(cliente)
+          flash[:success] = "Cliente Guardado e Contribuinte guardado: #{@customer.fiscal_id}"
+          redirect_to root_path
         else
           Invoicexpress::Models::Client.new(
             :name => "Shopify Anonimous Customer"
