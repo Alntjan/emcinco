@@ -34,10 +34,10 @@ class HomeController < ApplicationController
           cliente = Invoicexpress::Models::Client.new(
             :name => "#{@order.customer.first_name} #{@order.customer.last_name}",
             :email=> @order.customer.email,
-            :code=> @order.customer.id,
-            :fiscal_id=> params[:vat_number]
+            :code=> @order.customer.id
           )
-          #falta o fiscal_id
+          cliente.fiscal_id = params[:vat_number]
+
           if @order.customer.default_address!=nil
             #client.country    = order.customer.default_address.country
             cliente.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
