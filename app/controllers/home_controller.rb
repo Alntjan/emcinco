@@ -13,19 +13,53 @@ class HomeController < ApplicationController
     @order.note_attributes = {"vat_number" => params[:vat_number]}
 
     @client = get_invoicexpress_client()
-    @customer = @client.client_by_code(@order.customer.id)
-    # Invoicexpress::Models::Client.update_client(customer, options = {:fiscal_id=>params[:vat_number]})
-    # @client.clients.update_client(@customer, options = {:name => @order.billing_address.name , :code => @order.customer.id ,:fiscal_id => params[:vat_number]})
-    @customer.fiscal_id << params[:vat_number]
-    # @client.update_client(@customer, {:code => @customer.code, :name => @order.billing_address.name, :fiscal_id => params[:vat_number]})
-    @client.update_client(@customer)
-
-    if @order.save
-      flash[:success] = "Contribuinte guardado! #{@customer.code}"
-      redirect_to root_path
+    if @client.client_by_code(@order.customer.id)
+      @customer = @client.client_by_code(@order.customer.id)
+      if Valvat.new(params[:vat_number]).valid?
+        @customer.fiscal_id << params[:vat_number]
+        if @client.update_client(@customer)
+          flash[:success] = "Contribuinte guardado: #{@customer.fiscal_id}"
+          redirect_to root_path
+        else
+          flash[:error] = "Erro!"
+          redirect_to root_path
+        end
+      else
+        flash[:error] = "Contribuinte inválido!"
+        redirect_to root_path
+      end
     else
-      flash[:error] = "Erro!"
-      redirect_to root_path
+      if Valvat.new(params[:vat_number]).valid?
+        if @order.customer!=nil
+          client = Invoicexpress::Models::Client.new(
+            :name => "#{customer.first_name} #{customer.last_name}",
+            :email=> @order.customer.email,
+            :code=> @order.customer.id,
+            :fiscal_id=> params[:vat_number]
+          )
+          #falta o fiscal_id
+          if @order.customer.default_address!=nil
+            #client.country    = order.customer.default_address.country
+            client.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
+            if @order.customer.default_address.address2
+              client.address+=" #{@order.customer.default_address.address2}"
+            end
+            if @order.customer.default_address.city
+              client.address+=" #{@order.customer.default_address.city}"
+            end
+            client.postal_code= @order.customer.default_address.zip
+            client.phone      = @order.customer.default_address.phone
+          end
+          client
+        else
+          Invoicexpress::Models::Client.new(
+            :name => "Shopify Anonimous Customer"
+          )
+        end
+      else
+        flash[:error] = "Contribuinte inválido!"
+        redirect_to root_path
+      end
     end
   end
 
