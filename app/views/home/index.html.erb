@@ -112,7 +112,9 @@
                   <td>
                     <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
                     <% @customer = customer_stats(order.customer.id) %>
-                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-dropbox"></span></small></td>
+                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-dropbox"></span></small>
+                    <% if @customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %>
+                  </td>
                   <td>
                     <% if order.financial_status == "authorized" %>
                       <span class="label label-warning"><%= order.financial_status %></span>
@@ -174,7 +176,7 @@
                         <span class="icon-upload-24" style="margin-top: 0;"></span>
                       <% end %>
                     <% end %>
-                    
+
 
 <% if false
    submit_tag( "Atualizar", :class=>"btn btn-primary btn-xs btn-embossed" )
@@ -308,6 +310,7 @@ somefile.close
                     </td>
                     <td>
                       <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
+                      <% if @customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %>
                     </td>
                     <td>
                       <% if order.financial_status == "authorized" %>
@@ -400,7 +403,8 @@ somefile.close
                        <small style="color:#95a5a6;">/ <%= time_ago_in_words(order.created_at) %> ago</small>
                     </td>
                     <td>
-                    <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
+                    <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>                    <% if @customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %>
+
                     <td>
                       <% if order.financial_status == "authorized" %>
                         <span class="label label-warning"><%= order.financial_status %></span>
