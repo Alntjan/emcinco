@@ -16,7 +16,7 @@ class HomeController < ApplicationController
     if @client.client_by_code(@order.customer.id)
       @customer = @client.client_by_code(@order.customer.id)
       if Valvat.new("PT"+params[:vat_number]).valid?
-        @customer.fiscal_id == params[:vat_number]
+        @customer.fiscal_id = params[:vat_number]
         if @client.update_client(@customer)
           flash[:success] = "Contribuinte guardado: #{@customer.fiscal_id}"
           redirect_to root_path
