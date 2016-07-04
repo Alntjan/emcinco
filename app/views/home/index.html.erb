@@ -173,7 +173,7 @@
                     <% end %>
                     <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                       <%= hidden_field_tag(:order_id, "#{order.id}") %>
-                      <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=>"9" %>
+                      <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=> 9 %>
                       <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
                         <span class="icon-upload-24" style="margin-top: 0;"></span>
                       <% end %>
@@ -349,7 +349,7 @@ somefile.close
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                         <%= hidden_field_tag(:order_id, "#{order.id}") %>
-                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=>"9" %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=> 9 %>
                         <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
                           <span class="icon-upload-24" style="margin-top: 0;"></span>
                         <% end %>
@@ -455,7 +455,7 @@ somefile.close
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                         <%= hidden_field_tag(:order_id, "#{order.id}") %>
-                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=>"9" %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=> 9 %>
                         <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
                           <span class="icon-upload-24" style="margin-top: 0;"></span>
                         <% end %>
@@ -557,7 +557,7 @@ somefile.close
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                         <%= hidden_field_tag(:order_id, "#{order.id}") %>
-                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=>"9" %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte"), :size=> 9 %>
                         <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
                           <span class="icon-upload-24" style="margin-top: 0;"></span>
                         <% end %>
