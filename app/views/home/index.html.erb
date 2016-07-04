@@ -169,7 +169,7 @@
                   </td>
                   <td>
                     <% order.customer.metafields.each do |metafield| %>
-                      <% if metafield.key == "NIF" %> <img src="https://invoicexpress.com/_themes/ix/img/favicon/favicon.ico?v=1427110969" alt="" height="20px" /> <% end %>
+                      <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
                     <% end %>
                     <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                       <%= hidden_field_tag(:order_id, "#{order.id}") %>
@@ -344,7 +344,7 @@ somefile.close
                     </td>
                     <td>
                       <% order.customer.metafields.each do |metafield| %>
-                        <% if metafield.key == "NIF" %> <img src="https://invoicexpress.com/_themes/ix/img/favicon/favicon.ico?v=1427110969" alt="" height="20px" /> <% end %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
                       <% end %>
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
@@ -450,7 +450,7 @@ somefile.close
                     </td>
                     <td>
                       <% order.customer.metafields.each do |metafield| %>
-                        <% if metafield.key == "NIF" %> <img src="https://invoicexpress.com/_themes/ix/img/favicon/favicon.ico?v=1427110969" alt="" height="20px" /> <% end %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
                       <% end %>
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
@@ -552,7 +552,7 @@ somefile.close
                     </td>
                     <td>
                       <% order.customer.metafields.each do |metafield| %>
-                        <% if metafield.key == "NIF" %> <img src="https://invoicexpress.com/_themes/ix/img/favicon/favicon.ico?v=1427110969" alt="" height="20px" /> <% end %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
                       <% end %>
 
                       <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
