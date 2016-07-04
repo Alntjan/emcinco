@@ -31,7 +31,7 @@ class HomeController < ApplicationController
     else
       if Valvat.new("PT"+params[:vat_number]).valid?
         if @order.customer!=nil
-          client = Invoicexpress::Models::Client.new(
+          cliente = Invoicexpress::Models::Client.new(
             :name => "#{@order.customer.first_name} #{@order.customer.last_name}",
             :email=> @order.customer.email,
             :code=> @order.customer.id,
@@ -40,17 +40,23 @@ class HomeController < ApplicationController
           #falta o fiscal_id
           if @order.customer.default_address!=nil
             #client.country    = order.customer.default_address.country
-            client.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
+            cliente.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
             if @order.customer.default_address.address2
-              client.address+=" #{@order.customer.default_address.address2}"
+              cliente.address+=" #{@order.customer.default_address.address2}"
             end
             if @order.customer.default_address.city
-              client.address+=" #{@order.customer.default_address.city}"
+              cliente.address+=" #{@order.customer.default_address.city}"
             end
-            client.postal_code= @order.customer.default_address.zip
-            client.phone      = @order.customer.default_address.phone
+            cliente.postal_code= @order.customer.default_address.zip
+            cliente.phone      = @order.customer.default_address.phone
           end
-          client
+          if @client.create_client(cliente)
+            flash[:success] = "Cliente Guardado e Contribuinte guardado: #{@customer.fiscal_id}"
+            redirect_to root_path
+          else
+            flash[:error] = "Erro na criação de cliente!"
+            redirect_to root_path
+          end
         else
           Invoicexpress::Models::Client.new(
             :name => "Shopify Anonimous Customer"
