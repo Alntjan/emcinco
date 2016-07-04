@@ -168,6 +168,9 @@
                     <% end %>
                   </td>
                   <td>
+                    <% order.customer.metafields.each do |metafield| %>
+                      <%= metafield.key %> : <%= metafield.value %>
+                    <% end %>
 
                     <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                       <%= hidden_field_tag(:order_id, "#{order.id}") %>
