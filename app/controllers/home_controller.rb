@@ -11,6 +11,14 @@ class HomeController < ApplicationController
   def vat
     @order = ShopifyAPI::Order.find(params[:order_id])
     @order.note_attributes = {"vat_number" => params[:vat_number]}
+    @order.customer.add_metafield(ShopifyAPI::Metafield.new({
+      :description => 'Numero de Contribuinte',
+      :namespace => 'dados',
+      :key => 'NIF',
+      :value => params[:vat_number],
+      :value_type => 'string'
+    }))
+    @order.save
 
     @client = get_invoicexpress_client()
     if @client.client_by_code(@order.customer.id)
