@@ -25,7 +25,7 @@ class HomeController < ApplicationController
           redirect_to root_path
         end
       else
-        flash[:error] = "Contribuinte inválido!"
+        flash[:error] = "Contribuinte inválido e erro no update!"
         redirect_to root_path
       end
     else
@@ -57,7 +57,7 @@ class HomeController < ApplicationController
           )
         end
       else
-        flash[:error] = "Contribuinte inválido!"
+        flash[:error] = "Contribuinte inválido e erro na criação!"
         redirect_to root_path
       end
     end
