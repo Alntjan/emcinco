@@ -42,17 +42,17 @@ class HomeController < ApplicationController
           )
           cliente.fiscal_id = params[:vat_number]
 
-          if (@order.has_key? 'shipping_address' || @order.customer.has_key?  'default_address')
+          if (@order.has_key? 'billing_address')
             #client.country    = order.customer.default_address.country
-            cliente.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
-            if @order.customer.default_address.address2
-              cliente.address+=" #{@order.customer.default_address.address2}"
+            cliente.address    = "#{@order.billing_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
+            if @order.billing_address.address2
+              cliente.address+=" #{@order.billing_address.address2}"
             end
-            if @order.customer.default_address.city
-              cliente.address+=" #{@order.customer.default_address.city}"
+            if @order.billing_address.city
+              cliente.address+=" #{@order.billing_address.city}"
             end
-            cliente.postal_code= @order.customer.default_address.zip
-            cliente.phone      = @order.customer.default_address.phone
+            cliente.postal_code= @order.billing_address.zip
+            cliente.phone      = @order.billing_address.phone
           end
           @client.create_client(cliente)
           flash[:success] = "Cliente Guardado e Contribuinte guardado: #{cliente.fiscal_id}"
