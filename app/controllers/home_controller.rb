@@ -42,7 +42,7 @@ class HomeController < ApplicationController
           )
           cliente.fiscal_id = params[:vat_number]
 
-          if @order.shipping_address && @order.customer.default_address!=nil
+          if @order.shipping_address.present? && @order.customer.default_address!=nil
             #client.country    = order.customer.default_address.country
             cliente.address    = "#{@order.customer.default_address.address1}" #" #{customer.default_address.address2} #{customer.default_address.city}"
             if @order.customer.default_address.address2
