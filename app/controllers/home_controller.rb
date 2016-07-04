@@ -47,7 +47,7 @@ class HomeController < ApplicationController
             cliente.phone      = @order.customer.default_address.phone
           end
           @client.create_client(cliente)
-          flash[:success] = "Cliente Guardado e Contribuinte guardado: #{@customer.fiscal_id}"
+          flash[:success] = "Cliente Guardado e Contribuinte guardado: #{cliente.fiscal_id}"
           redirect_to root_path
         else
           Invoicexpress::Models::Client.new(
