@@ -169,7 +169,7 @@
                   </td>
                   <td>
                     <% order.customer.metafields.each do |metafield| %>
-                      <% if metafield.key == "NIF" %><span class="fui-check"></span><% end %>
+                      <% if metafield.key == "NIF" %> <img src="https://invoicexpress.com/_themes/ix/img/favicon/favicon.ico?v=1427110969" alt="" /> <% end %>
                     <% end %>
                     <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                       <%= hidden_field_tag(:order_id, "#{order.id}") %>
