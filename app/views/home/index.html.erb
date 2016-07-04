@@ -169,9 +169,8 @@
                   </td>
                   <td>
                     <% order.customer.metafields.each do |metafield| %>
-                      <%= metafield.key %> : <%= metafield.value %>
+                      <% if metafield.key == "NIF" %><span class="fui-check"></span><% end %>
                     <% end %>
-                    <% if order.customer.metafields.nif %> TEM! <% end %>
                     <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
                       <%= hidden_field_tag(:order_id, "#{order.id}") %>
                       <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte") %>
