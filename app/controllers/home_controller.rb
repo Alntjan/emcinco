@@ -32,7 +32,7 @@ class HomeController < ApplicationController
       if Valvat.new("PT"+params[:vat_number]).valid?
         if @order.customer!=nil
           client = Invoicexpress::Models::Client.new(
-            :name => "#{customer.first_name} #{customer.last_name}",
+            :name => "#{@order.customer.first_name} #{@order.customer.last_name}",
             :email=> @order.customer.email,
             :code=> @order.customer.id,
             :fiscal_id=> params[:vat_number]
