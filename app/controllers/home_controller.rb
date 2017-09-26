@@ -71,7 +71,7 @@ class HomeController < ApplicationController
 
   def validate
     @customer = ShopifyAPI::Customer.find(params[:id])
-    @customer.tags << params[:address_id]
+    @customer.tags << ", " + params[:address_id]
     if @customer.save
       flash[:success] = "Morada Validada!"
       redirect_to root_path
