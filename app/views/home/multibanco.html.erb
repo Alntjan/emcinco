@@ -1,0 +1,611 @@
+<script type="text/javascript">
+  ShopifyApp.ready(function(){
+    ShopifyApp.Bar.initialize({
+      title: "Home",
+      icon: "<%= asset_path('faveicon.png') %>"
+    });
+  });
+</script>
+<script>
+    var clipboard = new Clipboard('.btn-copy');
+    clipboard.on('success', function(e) {
+        console.log(e);
+        console.log(e.trigger.id);
+        $('#' + e.trigger.id).tooltip('show');
+    });
+    clipboard.on('error', function(e) {
+        console.log(e);
+    });
+</script>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="jumbotron" style="padding-top:1px; padding-bottom:10px; margin-bottom:0; background-color: #f9f9fa;">
+      <h1><span class="icon-shop"></span>&nbsp;Orders</h1>
+      <p>
+        <a class="btn btn-primary btn-xs" href="#" role="button"><%= @count %> Processadas</a>
+        <%
+          string = "https://#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com"
+          enviar_count = 0
+          @orders.each do |order|
+          if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")
+            string << "&ids%5B%5D=#{order.id}"
+            enviar_count = enviar_count + 1
+          end
+        end
+        %>
+        <% paractt = [] %>
+        <a class="btn btn-info btn-xs btn-embossed" href='<%= string %>' target="_blank"><%= enviar_count %>&nbsp;<span class="icon-printer"></span></a>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-danger btn-xs btn-embossed" data-toggle="modal" data-target="#myModal">
+          <%= enviar_count %>&nbsp;<span class="icon-truck"></span>
+        </button>
+      </p>
+    </div>
+  </div>
+  <div class="row">
+    <h6 style="font-weight: 700; font-size: 1.1em; margin:0; padding: 5px 15px; border-bottom: 2px solid #ecf0f1;">Enviar</h6>
+      <div class="table-responsive">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>
+                Encomenda
+              </th>
+              <th>
+                Cliente
+              </th>
+              <th>
+                Pago?
+              </th>
+              <th>
+                Gateway
+              </th>
+              <th>
+                Distrito
+              </th>
+              <th>
+                Acções
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @orders.each do |order| %>
+              <% if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")  %>
+              <% order.note_attributes.each do |attribute|
+                 if attribute.name['vat_number']
+                  @vat_value = attribute.value
+                else
+                  @vat_value = nil
+                end
+              end
+              if @vat_value.present? && order.note_attributes.count == 0
+                @vat_value = nil
+              end
+              %>
+              <%
+                cttorder = "#{order.order_number}+1+#{(order.total_weight / 1000.00).round(3).to_s.gsub!('.', ',')}+"
+                if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)"
+                  cttorder << ((order.total_price).to_f + 2.5).to_s.gsub!('.', ',')
+                else
+                  cttorder << "0,00"
+                end
+                cttorder << "ue+#{order.shipping_address.first_name} #{order.shipping_address.last_name}++"
+                if order.shipping_address.company
+                  cttorder << order.shipping_address.company
+                end
+                cttorder << "+#{order.shipping_address.address1} #{order.shipping_address.address2}"
+                if order.shipping_address.company && (order.shipping_address.address1.size + order.shipping_address.address2.size + order.shipping_address.company.size) < 60
+                  cttorder << order.shipping_address.company
+                end
+                cttorder << "+#{order.shipping_address.city}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3]}+#{(order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6]}++#{order.id}+++#{(order.shipping_address.phone).gsub('+351', '')}++#{order.customer.email}+#{order.shipping_address.country_code}+0++++#{(order.shipping_address.phone).gsub('+351', '')}+0++0++0++++"
+                paractt << I18n.transliterate(cttorder).gsub('?', '')
+              %>
+
+                <tr <% if order.updated_at > ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %> class="danger" <% end %>>
+                  <td>
+                    <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                    <% if order.updated_at > ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %>
+                      <i class="icon-clock" style="font-size: 0.9em; margin-top: -26px;"></i>
+                    <% end %>
+                  </td>
+                  <td>
+                    <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
+                    <% @customer = customer_stats(order.customer.id) %>
+                    &nbsp;&nbsp;<small><%= @customer.addresses.count %>&nbsp;<i class="icon-home-24" style="font-size: 0.9em; margin-top: -24px;"></i>&nbsp;&nbsp;<%= @customer.orders_count %>&nbsp;<span class="icon-dropbox"></span></small>
+                    <% if order.customer.note %><% if order.customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %><% end %>
+                  </td>
+                  <td>
+                    <% if order.financial_status == "authorized" %>
+                      <span class="label label-warning"><%= order.financial_status %></span>
+                    <% elsif order.financial_status == "paid" %>
+                      <span class="label label-primary"><%= order.financial_status %></span>
+                    <% else %>
+                      <span class="label label-default"><%= order.financial_status %></span>
+                    <% end %>
+                  </td>
+                  <!-- <td>
+                    <% order.shipping_lines.each do |line| %>
+                      <%= line.title %>
+                    <% end %>
+                  </td> -->
+                  <!-- <td>
+                    <%= order.payment_gateway_names %>
+                  </td> -->
+                  <td>
+                  <% if order.source_name == "web" %><span class="icon-world" style="top: 3px;"></span><% end %>
+                  <%
+                    case order.gateway
+                    when "braintree"
+                  %>
+                      <span class="label label-inverse">Braintree</span>
+                  <% when "paypal" %>
+                      <span class='label label-info'>Paypal</span>
+                  <%   when "Multibanco"%>
+                      <span class='label label-default'>Multibanco</span>
+                  <%   when "Pagamento à Cobrança (Custo Adicional 2,5€)"%>
+                      <span class='label label-danger'>Cobrança</span>
+                  <%   end
+                  %>
+                    <% order.shipping_lines.each do |line| %><%= '/ <span class="label label-warning">#{line.title}</span>' if line.title == 'Recolhes na Loja em Almada' %><% end %>
+                  </td>
+                  <!-- <td>
+                    <%= (order.total_weight / 1000.00).round(3) %> kg
+                  </td> -->
+                  <!-- <td>
+                    <% if order.updated_at < ((Time.current.beginning_of_day + 15.hours).to_time.iso8601) %>
+                      Antes das 15h
+                    <% end %>
+                  </td> -->
+                  <td>
+                    <!-- <% order.note_attributes.each do |attribute| %>
+                      <%= attribute.name %>: <%= attribute.value %>
+                    <% end %><br> -->
+                    <% if order.shipping_address.province == "Açores" || order.shipping_address.province == "Madeira" %>
+                      <span style="color: #e74c3c;"><%= order.shipping_address.province %>!</span>
+                    <% else %>
+                      <%= order.shipping_address.province %>
+                    <% end %>
+                  </td>
+                  <td>
+                    <% order.customer.metafields.each do |metafield| %>
+                      <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
+                    <% end %>
+                    <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
+                      <%= hidden_field_tag(:order_id, "#{order.id}") %>
+                      <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte", :size=> 9) %>
+
+                      <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
+                        <span class="icon-upload-24" style="margin-top: 0;"></span>
+                      <% end %>
+                    <% end %>
+
+
+<% if false
+   submit_tag( "Atualizar", :class=>"btn btn-primary btn-xs btn-embossed" )
+
+end %>
+
+
+                    <a class="btn btn-inverse btn-xs btn-embossed" role="button" data-toggle="collapse" href="#<%= order.id %>" aria-expanded="false" aria-controls="<%= order.id %>">
+                      <span class="icon-home-24" style="margin-top: 0;"></span>
+                    </a>
+                    <button id="<%= order.number %>"" class="btn btn-danger btn-copy btn-embossed btn-xs" data-clipboard-text="<%= I18n.transliterate(cttorder).gsub('?', '') %>" data-toggle="tooltip" title="Copiado!" data-delay='{"show":"5000", "hide":"1000"}'>
+                        <span class="icon-paste" style="margin-top:0;"></span>
+                    </button>
+                    <a class="btn btn-default btn-xs btn-embossed" href='https://<%="#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com&ids%5B%5D=#{order.id}"%>' target="_blank"><span class="icon-printer" style="margin-top: 0;"></span></a>
+                  </td>
+                </tr>
+                <!-- <tr>
+                  <td colspan="8">
+                    <%= order.order_number %>+1+<%= (order.total_weight / 1000.00).round(3).to_s.gsub!('.', ',') %>+<% if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)" %><%= ((order.total_price).to_f + 2.5).to_s.gsub!('.', ',') %><% else %>0,00<% end %>ue+<%= order.shipping_address.first_name %> <%= order.shipping_address.last_name %>++<% if order.shipping_address.company %><%= order.shipping_address.company %><% end %>+<%= order.shipping_address.address1 %> <%= order.shipping_address.address2 %>+<%= order.shipping_address.city %>+<%= (order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[0..3] %>+<%= (order.shipping_address.zip).gsub(/[^0-9A-Za-z]/, '')[4..6] %>++Observacoes+++<%= (order.shipping_address.phone).gsub!('+351', '') %>++<%= order.customer.email %>+<%= order.shipping_address.country_code %>+0++<% if order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)" %>CP2<% end %>++<%= order.shipping_address.phone %>+0++0++0++++
+                  </td>
+                </tr> -->
+                <tr class="collapse fade" id="<%= order.id %>">
+                  <td colspan="6" >
+                    <ul class="nav nav-list">
+                      <li class="active">
+                        <a href="#fakelink">
+                          <%= order.shipping_address.first_name %> <%= order.shipping_address.last_name %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= order.shipping_address.company %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= order.shipping_address.address1 %> <%= order.shipping_address.address2 %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= order.shipping_address.zip %> <%= order.shipping_address.city %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= order.shipping_address.province %>, <%= order.shipping_address.country %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= order.shipping_address.phone %>
+                        </a>
+                      </li>
+                      <% @customer.addresses.each do |address| %>
+                      <li>
+                        <a href='<%= validate_path(:id => @customer.id, :address_id => address.id) %>' style="color: #34495e;">
+                        <span <%= 'style="color: red;"' if address.first_name != order.shipping_address.first_name %>><%= address.first_name %></span>
+                          <%= address.last_name %>
+                          <%= address.company %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
+                        <% if address.address1 == order.shipping_address.address1 %>
+                          <span><%= address.address1 %> <%= address.address2 %></span>
+                        <% else %>
+                          <span style="color: #e74c3c;"><%= address.address1 %> <%= address.address2 %></span>
+                        <% end %>
+
+
+
+                          &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.zip %> <%= address.city %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.province %>, <%= address.country %>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;<%= address.phone %>&nbsp;&nbsp;
+                        <% if @customer.tags.include?(address.id.to_s) %>
+                          <i class="icon-truck" style="font-size: 0.8em; margin-top:-25px; color:#1abc9c;"></i>
+                        <% else %>
+                          <i class="icon-truck" style="font-size: 0.8em; margin-top:-25px; color:#e74c3c;"></i>
+                        <% end %>
+
+                        </a>
+                      </li>
+                      <% end %>
+                    </ul>
+
+                  </td>
+                </tr>
+
+
+              <% end %>
+            <% end %>
+            <% if paractt.empty? %>
+            <tr>
+              <td colspan="6" style="font-style: italic; text-align: center; font-size: 1.2em; padding: 50px 10px;">
+                Não há encomendas para enviar pelos CTT...
+              </td>
+            </tr>
+            <% end %>
+          </tbody>
+        </table>
+
+      </div>
+    </div>
+      <% if false %>
+      <%
+      fname = "sample.txt"
+somefile = File.open(fname, "w")
+somefile.puts "Hello file!"
+somefile.close
+      %>
+      <% end %>
+
+
+
+
+
+
+<% if false %>
+      <div class="row">
+        <h6 style="font-weight: 700; font-size: 1.1em; margin:0; padding: 5px 15px; border-bottom: 2px solid #ecf0f1;">Recolhas na Loja</h6>
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  Encomenda
+                </th>
+                <th>
+                  Cliente
+                </th>
+                <th>
+                  Pago?
+                </th>
+                <th>
+                  Gateway
+                </th>
+                <th>
+                  Acções
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @orders.each do |order| %>
+                <% if order.gateway == "Pagas na Loja de Almada" || (order.shipping_lines.count > 0 && order.shipping_lines[0].title == "Recolhes na Loja em Almada") %>
+                <% order.note_attributes.each do |attribute|
+                   if attribute.name['vat_number']
+                    @vat_value = attribute.value
+                  else
+                    @vat_value = nil
+                  end
+                end
+                if @vat_value.present? && order.note_attributes.count == 0
+                  @vat_value = nil
+                end
+                %>
+                  <tr>
+                    <td>
+                      <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                       <small style="color:#95a5a6;">/ <%= time_ago_in_words(order.created_at) %> ago</small>
+                    </td>
+                    <td>
+                      <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
+                      <% if order.customer.note %><% if order.customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %><% end %>
+                    </td>
+                    <td>
+                      <% if order.financial_status == "authorized" %>
+                        <span class="label label-warning"><%= order.financial_status %></span>
+                      <% elsif order.financial_status == "paid" %>
+                        <span class="label label-primary"><%= order.financial_status %></span>
+                      <% else %>
+                        <span class="label label-default"><%= order.financial_status %></span>
+                      <% end %>
+                    </td>
+
+                    <td>
+                    <% if order.source_name == "web" %><span class="icon-world"></span><% end %>
+                    <%
+                      case order.gateway
+                      when "braintree"
+                    %>
+                        <span class="label label-inverse">Braintree</span>
+                    <% when "paypal" %>
+                        <span class='label label-info'>Paypal</span>
+                    <%   when "Multibanco"%>
+                        <span class='label label-default'>Multibanco</span>
+                    <%   when "Pagamento à Cobrança (Custo Adicional 2,5€)"%>
+                        <span class='label label-danger'>Cobrança</span>
+                    <%   when "Pagas na Loja de Almada" %>
+                        <span class='label label-default'>In Store</span>
+                    <%   end
+                    %>
+                    </td>
+                    <td>
+                      <% order.customer.metafields.each do |metafield| %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
+                      <% end %>
+
+                      <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
+                        <%= hidden_field_tag(:order_id, "#{order.id}") %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte", :size=> 9) %>
+
+                        <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
+                          <span class="icon-upload-24" style="margin-top: 0;"></span>
+                        <% end %>
+                      <% end %>
+                      <a class="btn btn-default btn-xs btn-embossed" href='https://<%="#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com&ids%5B%5D=#{order.id}"%>' target="_blank"><span class="icon-printer" style="margin-top: 0;"></span></a>
+
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="row">
+        <h6 style="font-weight: 700; font-size: 1.1em; margin:0; padding: 5px 15px; border-bottom: 2px solid #ecf0f1;">Loja de Almada</h6>
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  Encomenda
+                </th>
+                <th>
+                  Cliente
+                </th>
+                <th>
+                  Pago?
+                </th>
+                <th>
+                  Utilizador
+                </th>
+                <th>
+                  Acções
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @orders.each do |order| %>
+                <% if order.source_name == "shopify_draft_order" %>
+                <% order.note_attributes.each do |attribute|
+                   if attribute.name['vat_number']
+                    @vat_value = attribute.value
+                  else
+                    @vat_value = nil
+                  end
+                end
+                if @vat_value.present? && order.note_attributes.count == 0
+                  @vat_value = nil
+                end
+                %>
+                  <tr>
+                    <td>
+                      <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                       <small style="color:#95a5a6;">/ <%= time_ago_in_words(order.created_at) %> ago</small>
+                    </td>
+                    <td>
+                    <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a><% if order.customer.note %>                    <% if order.customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %><% end %>
+
+                    <td>
+                      <% if order.financial_status == "authorized" %>
+                        <span class="label label-warning"><%= order.financial_status %></span>
+                      <% elsif order.financial_status == "paid" %>
+                        <span class="label label-primary"><%= order.financial_status %></span>
+                      <% else %>
+                        <span class="label label-default"><%= order.financial_status %></span>
+                      <% end %>
+                    </td>
+
+                    <td>
+                    <% if order.source_name == "web" %><span class="">&#x1f30e;</span><% end %>
+                    <%
+                      case order.gateway
+                      when "braintree"
+                    %>
+                        <span class="label label-inverse">Braintree</span>
+                    <% when "paypal" %>
+                        <span class='label label-info'>Paypal</span>
+                    <%   when "Multibanco"%>
+                        <span class='label label-default'>Multibanco</span>
+                    <%   when "Pagamento à Cobrança (Custo Adicional 2,5€)"%>
+                        <span class='label label-danger'>Cobrança</span>
+                    <%   when "Pagas na Loja de Almada" %>
+                        <span class='label label-default'>In Store</span>
+                      <%   else %>
+                        <% if order.user_id == 3989593 %>
+                          Mário Oliveira
+                        <% elsif order.user_id == 3419063 %>
+                          Filipe Catarino
+                        <% elsif order.user_id == 3965829 %>
+                          Carlos Marques
+                        <% else %>
+                          <%= order.user_id %>
+                        <% end %>
+                    <%   end
+                    %>
+                    </td>
+                    <td>
+                      <% order.customer.metafields.each do |metafield| %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
+                      <% end %>
+
+                      <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
+                        <%= hidden_field_tag(:order_id, "#{order.id}") %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte", :size=> 9) %>
+
+                        <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
+                          <span class="icon-upload-24" style="margin-top: 0;"></span>
+                        <% end %>
+                      <% end %>
+                      <a class="btn btn-default btn-xs btn-embossed" href='https://<%="#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com&ids%5B%5D=#{order.id}"%>' target="_blank"><span class="icon-printer" style="margin-top: 0;"></span></a>
+
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
+        <h6 style="font-weight: 700; font-size: 1.1em; margin:0; padding: 5px 15px; border-bottom: 2px solid #ecf0f1;">Pagamentos Multibanco em Falta</h6>
+
+        <div class="table-responsive">
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>
+                  Encomenda
+                </th>
+                <th>
+                  Cliente
+                </th>
+                <th>
+                  Pago?
+                </th>
+                <th>
+                  Gateway
+                </th>
+                <th>
+                  Acções
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @orders.each do |order| %>
+                <% if order.gateway == "Multibanco" && order.financial_status == "pending" %>
+                <% order.note_attributes.each do |attribute|
+                   if attribute.name['vat_number']
+                    @vat_value = attribute.value
+                  else
+                    @vat_value = nil
+                  end
+                end
+                if @vat_value.present? && order.note_attributes.count == 0
+                  @vat_value = nil
+                end
+                %>
+                  <tr>
+                    <td>
+                      <a href='https://<%="#{@shop_session.url}/admin/orders/#{order.id}"%>' target="_blank"> <%= order.order_number %> </a>
+                      <% if order.created_at < 3.days.ago %>
+                        <small style="color:#e74c3c;">/ <%= time_ago_in_words(order.created_at) %> ago</small>
+                      <% else %>
+                        <small style="color:#95a5a6;">/ <%= time_ago_in_words(order.created_at) %> ago</small>
+                      <% end %>
+                    </td>
+                    <td>
+                      <a href='https://<%="#{@shop_session.url}/admin/customers/#{order.customer.id}"%>' target="_blank"> <%= order.customer.first_name %> <%= order.customer.last_name %> </a>
+                      <% if order.customer.note %><% if order.customer.note.include? "NIF" %><span class="label label-warning">NIF ANTIGO</span><% end %><% end %>
+                    </td>
+                    <td>
+                      <% if order.financial_status == "authorized" %>
+                        <span class="label label-warning"><%= order.financial_status %></span>
+                      <% elsif order.financial_status == "paid" %>
+                        <span class="label label-primary"><%= order.financial_status %></span>
+                      <% else %>
+                        <span class="label label-default"><%= order.financial_status %></span>
+                      <% end %>
+                    </td>
+
+                    <td>
+                    <% if order.source_name == "web" %><span class="icon-world" style="top: 3px;"></span><% end %>
+                    <%
+                      case order.gateway
+                      when "braintree"
+                    %>
+                        <span class="label label-inverse">Braintree</span>
+                    <% when "paypal" %>
+                        <span class='label label-info'>Paypal</span>
+                    <%   when "Multibanco"%>
+                        <span class='label label-default'>Multibanco</span>
+                    <%   when "Pagamento à Cobrança (Custo Adicional 2,5€)"%>
+                        <span class='label label-danger'>Cobrança</span>
+                    <%   when "Pagas na Loja de Almada" %>
+                        <span class='label label-default'>In Store</span>
+                    <%   end
+                    %>
+                    </td>
+                    <td>
+                      <% order.customer.metafields.each do |metafield| %>
+                        <% if metafield.key == "NIF" %> <span class="label label-primary label-xs">invoice</span> <% end %>
+                      <% end %>
+
+                      <%= form_tag({controller: "home", action: "vat"}, method: "put", class: "form-inline", style: "display: inline-block;") do %>
+                        <%= hidden_field_tag(:order_id, "#{order.id}") %>
+                        <%= text_field_tag(:vat_number, "#{@vat_value}", :class=>"form-control input-sm", :style=>"height:25px; border: 1px solid #ecf0f1;", :placeholder=>"Contribuinte", :size=> 9) %>
+
+                        <%= button_tag(type: "submit", class: "btn btn-primary btn-xs btn-embossed") do %>
+                          <span class="icon-upload-24" style="margin-top: 0;"></span>
+                        <% end %>
+                      <% end %>
+                      <a class="btn btn-default btn-xs btn-embossed" href='https://<%="#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com&ids%5B%5D=#{order.id}"%>' target="_blank"><span class="icon-printer" style="margin-top: 0;"></span></a>
+
+                    </td>
+                  </tr>
+                <% end %>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<% end %>
+
+
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Importador CTTExpresso</h4>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <textarea rows="15" class="form-control" id="ctt-text"><% paractt.each do |para| %><%= "#{para}\n" %><% end %></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary btn-copy btn-embossed btn-block" data-clipboard-target="#ctt-text">Copiar</button>
+      </div>
+    </div>
+  </div>
+</div>

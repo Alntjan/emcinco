@@ -8,6 +8,11 @@ class HomeController < ApplicationController
     @count = @orders.count
   end
 
+  def multibanco
+    @orders = ShopifyAPI::Order.find(:all, :params => {:limit => 100, :created_at_min => "2016-01-8 00:00"})
+    @count = @orders.count
+  end
+  
   def vat
     @order = ShopifyAPI::Order.find(params[:order_id])
     @order.note_attributes = {"vat_number" => params[:vat_number]}
