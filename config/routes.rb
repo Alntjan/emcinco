@@ -7,6 +7,7 @@ Rails.application.routes.draw do
     get 'logout' => :destroy, :as => :logout
   end
 
+  get 'multibanco' => 'home#multibanco'
   get 'tags' => 'home#tags'
   put 'vat' => 'home#vat'
   get 'validate' => 'home#validate'
