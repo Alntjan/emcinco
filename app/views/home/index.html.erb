@@ -28,7 +28,7 @@
           string = "https://#{@shop_session.url}/admin/apps/order-printer/orders/bulk?shop=my-whey.myshopify.com"
           enviar_count = 0
           @orders.each do |order|
-          if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree" || order.gateway == "MB Way") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")
+          if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree" || order.gateway == "MB WAY") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")
             string << "&ids%5B%5D=#{order.id}"
             enviar_count = enviar_count + 1
           end
@@ -71,7 +71,7 @@
           </thead>
           <tbody>
             <% @orders.each do |order| %>
-              <% if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")  %>
+              <% if ((((order.gateway == "Multibanco" || order.gateway == "paypal" || order.gateway == "braintree" || order.gateway == "MB WAY") && (order.financial_status == "paid" || order.financial_status == "authorized")) || order.gateway == "Pagamento à Cobrança (Custo Adicional 2,5€)") && order.fulfillment_status == nil) || order.tags.include?("Para Enviar")  %>
               <% order.note_attributes.each do |attribute|
                  if attribute.name['vat_number']
                   @vat_value = attribute.value
